@@ -1,4 +1,5 @@
 import { BotonesModule } from '../modules/botones';
+import { DocumentUploadModule } from '../modules/document-upload';
 
 interface MainContentProps {
   activeModule: string | null;
@@ -9,6 +10,8 @@ export function MainContent({ activeModule }: MainContentProps) {
     switch (activeModule) {
       case 'botones':
         return <BotonesModule />;
+      case 'document-upload':
+        return <DocumentUploadModule />;
       default:
         return <div className="text-center text-gray-500">Selecciona un módulo</div>;
     }

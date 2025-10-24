@@ -10,6 +10,8 @@ function AppContent() {
   useEffect(() => {
     if (location.pathname === '/buttons') {
       setActiveModule('botones');
+    } else if (location.pathname === '/document-upload') {
+      setActiveModule('document-upload');
     } else if (location.pathname === '/') {
       setActiveModule(null);
     }
@@ -19,6 +21,8 @@ function AppContent() {
     setActiveModule(moduleId);
     if (moduleId === 'botones') {
       navigate('/buttons');
+    } else if (moduleId === 'document-upload') {
+      navigate('/document-upload');
     }
   };
 
@@ -36,6 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AppContent />} />
         <Route path="/buttons" element={<AppContent />} />
+        <Route path="/document-upload" element={<AppContent />} />
       </Routes>
     </Router>
   )

@@ -1,8 +1,6 @@
-import React from 'react';
 import { registerModule, registerSubModule } from '../../lib/moduleMapper';
 import { BotonesModule } from './botones';
 
-// Example module components (you can replace these with your actual components)
 const DashboardModule = () => (
   <div className="p-6">
     <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
