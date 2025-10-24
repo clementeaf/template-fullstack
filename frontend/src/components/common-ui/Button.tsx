@@ -27,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   // Base classes
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
-  
+
   // Variant classes
   const variantClasses = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
@@ -37,19 +37,19 @@ const Button: React.FC<ButtonProps> = ({
     warning: 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500',
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
   };
-  
+
   // Size classes
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-lg'
   };
-  
+
   // Disabled classes
-  const disabledClasses = disabled || loading 
-    ? 'opacity-50 cursor-not-allowed' 
+  const disabledClasses = disabled || loading
+    ? 'opacity-50 cursor-not-allowed'
     : '';
-  
+
   // Combine all classes
   const buttonClasses = `
     ${baseClasses}
@@ -58,29 +58,29 @@ const Button: React.FC<ButtonProps> = ({
     ${disabledClasses}
     ${className}
   `.trim().replace(/\s+/g, ' ');
-  
+
   // Handle click
   const handleClick = () => {
     if (!disabled && !loading && onClick) {
       onClick();
     }
   };
-  
+
   // Render icon
   const renderIcon = () => {
     if (!icon) return null;
-    
+
     return (
       <span className={iconPosition === 'left' ? 'mr-2' : 'ml-2'}>
         {icon}
       </span>
     );
   };
-  
+
   // Render loading spinner
   const renderLoading = () => {
     if (!loading) return null;
-    
+
     return (
       <span className="mr-2">
         <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@ const Button: React.FC<ButtonProps> = ({
       </span>
     );
   };
-  
+
   return (
     <button
       type={type}

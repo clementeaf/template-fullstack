@@ -1,6 +1,24 @@
 // Module mapping system for easy module and submodule management
 import React from 'react';
 
+// Navigation structure types
+export interface NavigationItem {
+  id: string;
+  name: string;
+  path: string;
+  icon?: string;
+  description?: string;
+  submodules?: NavigationSubItem[];
+}
+
+export interface NavigationSubItem {
+  id: string;
+  name: string;
+  path: string;
+  icon?: string;
+  description?: string;
+}
+
 export interface ModuleConfig {
   id: string;
   name: string;
@@ -127,24 +145,6 @@ export const getModuleRoutes = (): Array<{
 
   return routes;
 };
-
-// Navigation structure types
-export interface NavigationItem {
-  id: string;
-  name: string;
-  path: string;
-  icon?: string;
-  description?: string;
-  submodules?: NavigationSubItem[];
-}
-
-export interface NavigationSubItem {
-  id: string;
-  name: string;
-  path: string;
-  icon?: string;
-  description?: string;
-}
 
 // Function to get navigation structure
 export const getNavigationStructure = (): NavigationItem[] => {

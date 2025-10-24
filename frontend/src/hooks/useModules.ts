@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { 
-  moduleMapper, 
-  getModuleRoutes, 
+import {
+  moduleMapper,
+  getModuleRoutes,
   getNavigationStructure,
-  ModuleConfig,
-  SubModuleConfig,
-  NavigationItem
+  type ModuleConfig,
+  type SubModuleConfig,
+  type NavigationItem,
 } from '../lib/moduleMapper';
 
 // Hook to get all modules
@@ -20,8 +20,8 @@ export const useActiveModules = (): ModuleConfig[] => {
 
 // Hook to get modules by permission
 export const useModulesByPermission = (permission: string): ModuleConfig[] => {
-  return useMemo(() => 
-    moduleMapper.getModulesByPermission(permission), 
+  return useMemo(() =>
+    moduleMapper.getModulesByPermission(permission),
     [permission]
   );
 };
@@ -33,8 +33,8 @@ export const useModule = (id: string): ModuleConfig | undefined => {
 
 // Hook to get a specific submodule
 export const useSubModule = (moduleId: string, subModuleId: string): SubModuleConfig | undefined => {
-  return useMemo(() => 
-    moduleMapper.getSubModule(moduleId, subModuleId), 
+  return useMemo(() =>
+    moduleMapper.getSubModule(moduleId, subModuleId),
     [moduleId, subModuleId]
   );
 };
@@ -75,7 +75,7 @@ export const useModuleByPath = (path: string): ModuleByPathResult | SubModuleByP
     // Check submodules
     for (const m of moduleMapper.modules) {
       if (m.submodules) {
-        const subModule = m.submodules.find(sub => 
+        const subModule = m.submodules.find(sub =>
           `${m.path}${sub.path}` === path
         );
         if (subModule) {

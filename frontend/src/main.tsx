@@ -5,6 +5,10 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import './index.css'
 import App from './App.tsx'
 import { queryClient } from './lib/queryClient'
+import { registerAllModules } from './components/modules/ModuleRegistry'
+
+// Initialize modules
+registerAllModules();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

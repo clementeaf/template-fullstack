@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { ButtonStates, ButtonActionHandler } from './types';
+import type { ButtonActionHandler } from './types';
 
 export const useButtonStates = () => {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
@@ -37,14 +37,14 @@ export const useButtonStates = () => {
     return defaultDisabled || errorStates[buttonId] || false;
   };
 
-  const getButtonOnClick = (onClick?: string): (() => void) | undefined => {
-    if (!onClick) return undefined;
+  const getButtonOnClick = (onClick?: string, buttonId?: string): (() => void) | undefined => {
+    if (!onClick || !buttonId) return undefined;
     
     switch (onClick) {
       case 'handleLoading':
-        return (buttonId: string) => handleLoading(buttonId);
+        return () => handleLoading(buttonId);
       case 'handleError':
-        return (buttonId: string) => handleError(buttonId);
+        return () => handleError(buttonId);
       default:
         return undefined;
     }

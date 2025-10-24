@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from '../../common-ui';
-import { ButtonSection as ButtonSectionType, ButtonConfig } from './types';
+import type { ButtonSection as ButtonSectionType, ButtonConfig } from './types';
 
 interface ButtonSectionProps {
   section: ButtonSectionType;
   getButtonText: (buttonId: string, text: string, loadingText?: string, errorText?: string) => string;
   getButtonLoading: (buttonId: string) => boolean;
   getButtonDisabled: (buttonId: string, defaultDisabled?: boolean) => boolean;
-  getButtonOnClick: (onClick?: string) => ((buttonId: string) => void) | undefined;
+  getButtonOnClick: (onClick?: string, buttonId?: string) => (() => void) | undefined;
 }
 
 const ButtonSection: React.FC<ButtonSectionProps> = ({
@@ -18,8 +18,7 @@ const ButtonSection: React.FC<ButtonSectionProps> = ({
   getButtonOnClick
 }) => {
   const renderButton = (button: ButtonConfig) => {
-    const onClick = getButtonOnClick(button.onClick);
-    const handleClick = onClick ? () => onClick(button.id) : undefined;
+    const onClick = getButtonOnClick(button.onClick, button.id);
 
     return (
       <Button
@@ -30,7 +29,7 @@ const ButtonSection: React.FC<ButtonSectionProps> = ({
         iconPosition={button.iconPosition}
         loading={getButtonLoading(button.id)}
         disabled={getButtonDisabled(button.id, button.disabled)}
-        onClick={handleClick}
+        onClick={onClick}
         className={button.className}
       >
         {getButtonText(button.id, button.text, button.loadingText, button.errorText)}
