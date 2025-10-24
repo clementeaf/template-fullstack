@@ -1,0 +1,178 @@
+{
+  "sections": [
+    {
+      "id": "estados",
+      "title": "Estados del Botón",
+      "description": "Demostración de los diferentes estados del botón",
+      "buttons": [
+        {
+          "id": "active",
+          "text": "Activo",
+          "loadingText": "Cargando...",
+          "variant": "primary",
+          "onClick": "handleLoading",
+          "showLoading": true
+        },
+        {
+          "id": "error",
+          "text": "Éxito",
+          "errorText": "Error",
+          "variant": "success",
+          "onClick": "handleError",
+          "showError": true
+        },
+        {
+          "id": "disabled",
+          "text": "Desactivado",
+          "variant": "danger",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "id": "variantes",
+      "title": "Variantes de Colores",
+      "description": "Diferentes variantes de colores disponibles",
+      "buttons": [
+        {
+          "id": "primary",
+          "text": "Primario",
+          "variant": "primary"
+        },
+        {
+          "id": "secondary",
+          "text": "Secundario",
+          "variant": "secondary"
+        },
+        {
+          "id": "outline",
+          "text": "Outline",
+          "variant": "outline"
+        },
+        {
+          "id": "success",
+          "text": "Éxito",
+          "variant": "success"
+        },
+        {
+          "id": "warning",
+          "text": "Advertencia",
+          "variant": "warning"
+        },
+        {
+          "id": "danger",
+          "text": "Peligro",
+          "variant": "danger"
+        }
+      ]
+    },
+    {
+      "id": "tamanos",
+      "title": "Tamaños",
+      "description": "Diferentes tamaños de botones",
+      "buttons": [
+        {
+          "id": "small",
+          "text": "Pequeño",
+          "variant": "primary",
+          "size": "sm"
+        },
+        {
+          "id": "medium",
+          "text": "Mediano",
+          "variant": "primary",
+          "size": "md"
+        },
+        {
+          "id": "large",
+          "text": "Grande",
+          "variant": "primary",
+          "size": "lg"
+        }
+      ]
+    },
+    {
+      "id": "iconos",
+      "title": "Con Iconos",
+      "description": "Botones con iconos en diferentes posiciones",
+      "buttons": [
+        {
+          "id": "add",
+          "text": "Agregar",
+          "variant": "primary",
+          "icon": "➕",
+          "iconPosition": "left"
+        },
+        {
+          "id": "save",
+          "text": "Guardar",
+          "variant": "success",
+          "icon": "💾",
+          "iconPosition": "left"
+        },
+        {
+          "id": "delete",
+          "text": "Eliminar",
+          "variant": "danger",
+          "icon": "🗑️",
+          "iconPosition": "left"
+        }
+      ]
+    },
+    {
+      "id": "interactivos",
+      "title": "Estados Interactivos",
+      "description": "Botones con estados dinámicos interactivos",
+      "buttons": [
+        {
+          "id": "interactive",
+          "text": "Normal",
+          "loadingText": "Cargando...",
+          "variant": "primary",
+          "onClick": "handleLoading",
+          "showLoading": true
+        },
+        {
+          "id": "interactive-error",
+          "text": "Con Error",
+          "errorText": "Error",
+          "variant": "warning",
+          "onClick": "handleError",
+          "showError": true
+        },
+        {
+          "id": "interactive-disabled",
+          "text": "Deshabilitado",
+          "variant": "secondary",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "id": "grupo",
+      "title": "Grupo de Botones",
+      "description": "Botones agrupados visualmente",
+      "layout": "group",
+      "buttons": [
+        {
+          "id": "left",
+          "text": "Izquierda",
+          "variant": "primary",
+          "className": "flex-1 rounded-r-none"
+        },
+        {
+          "id": "center",
+          "text": "Centro",
+          "variant": "primary",
+          "className": "flex-1 rounded-none"
+        },
+        {
+          "id": "right",
+          "text": "Derecha",
+          "variant": "primary",
+          "className": "flex-1 rounded-l-none"
+        }
+      ]
+    }
+  ]
+}
