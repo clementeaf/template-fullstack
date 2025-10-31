@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FileUpload } from '../../common-ui';
+import { select } from 'radashi';
 
 interface UploadedFile {
   id: string;
@@ -12,20 +13,25 @@ const DocumentUploadModule: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [maxSize, setMaxSize] = useState<number>(10);
 
-  const handleFilesSelect = (files: File[]) => {
-    files.forEach(file => {
-      const newFile: UploadedFile = {
-        id: `${Date.now()}-${Math.random()}`,
-        file,
-        status: 'uploading',
-        progress: 0
-      };
-      
+  /**
+   * Maneja la selección de archivos y crea los objetos UploadedFile correspondientes
+   * @param files - Array de archivos seleccionados
+   */
+  const handleFilesSelect = (files: File[]): void => {
+    const timestamp = Date.now();
+    const newFiles: UploadedFile[] = files.map((file: File) => ({
+      id: `${timestamp}-${Math.random()}-${file.name}`,
+      file,
+      status: 'uploading' as const,
+      progress: 0
+    }));
+
+    newFiles.forEach((newFile: UploadedFile) => {
       setUploadedFiles(prev => [...prev, newFile]);
       
       const interval = setInterval(() => {
         setUploadedFiles(prev => 
-          prev.map(f => 
+          prev.map((f: UploadedFile) => 
             f.id === newFile.id 
               ? { ...f, progress: Math.min((f.progress || 0) + 10, 100) }
               : f
@@ -35,9 +41,9 @@ const DocumentUploadModule: React.FC = () => {
 
       setTimeout(() => {
         setUploadedFiles(prev => 
-          prev.map(f => 
+          prev.map((f: UploadedFile) => 
             f.id === newFile.id 
-              ? { ...f, status: 'completed', progress: 100 }
+              ? { ...f, status: 'completed' as const, progress: 100 }
               : f
           )
         );
@@ -46,10 +52,25 @@ const DocumentUploadModule: React.FC = () => {
     });
   };
 
-  const removeFile = (fileId: string) => {
-    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
+  /**
+   * Elimina un archivo de la lista de archivos cargados
+   * @param fileId - ID del archivo a eliminar
+   */
+  const removeFile = (fileId: string): void => {
+    setUploadedFiles(prev => 
+      select(
+        prev,
+        file => file,
+        file => file.id !== fileId
+      )
+    );
   };
 
+  /**
+   * Formatea el tamaño de un archivo en bytes a una representación legible
+   * @param bytes - Tamaño del archivo en bytes
+   * @returns String con el tamaño formateado (ej: "1.5 MB")
+   */
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;

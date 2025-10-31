@@ -1,28 +1,50 @@
 import { MainContent, MainLayout, Sidebar } from "./components/layout"
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom"
+import { get } from "radashi"
 
+/**
+ * Mapeo de rutas a IDs de módulos
+ */
+const routeToModuleMap: Record<string, string | null> = {
+  '/': null,
+  '/buttons': 'botones',
+  '/document-upload': 'document-upload'
+};
+
+/**
+ * Mapeo de IDs de módulos a rutas
+ */
+const moduleToRouteMap: Record<string, string> = {
+  'botones': '/buttons',
+  'document-upload': '/document-upload'
+};
+
+/**
+ * Componente principal de la aplicación que maneja el routing y la navegación
+ */
 function AppContent() {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
+  /**
+   * Actualiza el módulo activo según la ruta actual
+   */
   useEffect(() => {
-    if (location.pathname === '/buttons') {
-      setActiveModule('botones');
-    } else if (location.pathname === '/document-upload') {
-      setActiveModule('document-upload');
-    } else if (location.pathname === '/') {
-      setActiveModule(null);
-    }
+    const moduleId = get(routeToModuleMap, location.pathname, null) as string | null;
+    setActiveModule(moduleId);
   }, [location.pathname]);
 
-  const handleModuleSelect = (moduleId: string) => {
+  /**
+   * Maneja la selección de un módulo y navega a su ruta correspondiente
+   * @param moduleId - ID del módulo seleccionado
+   */
+  const handleModuleSelect = (moduleId: string): void => {
     setActiveModule(moduleId);
-    if (moduleId === 'botones') {
-      navigate('/buttons');
-    } else if (moduleId === 'document-upload') {
-      navigate('/document-upload');
+    const route = get(moduleToRouteMap, moduleId) as string | undefined;
+    if (route) {
+      navigate(route);
     }
   };
 
@@ -34,6 +56,9 @@ function AppContent() {
   )
 }
 
+/**
+ * Componente raíz de la aplicación que configura el routing
+ */
 function App() {
   return (
     <Router>

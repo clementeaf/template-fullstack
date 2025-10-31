@@ -1,5 +1,6 @@
 // Module mapping system for easy module and submodule management
 import React from 'react';
+import { select } from 'radashi';
 
 // Navigation structure types
 export interface NavigationItem {
@@ -53,54 +54,98 @@ export interface ModuleMapper {
 // Module registry
 const moduleRegistry: ModuleConfig[] = [];
 
+/**
+ * Obtiene un módulo por su ID
+ * @param id - ID del módulo a buscar
+ * @returns El módulo encontrado o undefined
+ */
+const getModuleById = (id: string): ModuleConfig | undefined => {
+  return moduleRegistry.find((module: ModuleConfig) => module.id === id);
+};
+
+/**
+ * Obtiene un submódulo por su ID dentro de un módulo
+ * @param moduleId - ID del módulo padre
+ * @param subModuleId - ID del submódulo
+ * @returns El submódulo encontrado o undefined
+ */
+const getSubModuleById = (moduleId: string, subModuleId: string): SubModuleConfig | undefined => {
+  const module = moduleRegistry.find((m: ModuleConfig) => m.id === moduleId);
+  return module?.submodules ? module.submodules.find((sub: SubModuleConfig) => sub.id === subModuleId) : undefined;
+};
+
+/**
+ * Obtiene todos los módulos activos
+ * @returns Array de módulos activos
+ */
+const getActiveModulesInternal = (): ModuleConfig[] => {
+  return select(
+    moduleRegistry,
+    module => module,
+    module => module.isActive !== false
+  );
+};
+
+/**
+ * Obtiene módulos filtrados por permiso
+ * @param permission - Permiso requerido
+ * @returns Array de módulos que cumplen el permiso
+ */
+const getModulesByPermissionInternal = (permission: string): ModuleConfig[] => {
+  return select(
+    moduleRegistry,
+    module => module,
+    module => 
+      module.isActive !== false && 
+      (!module.permissions || module.permissions.includes(permission))
+  );
+};
+
 // Module mapper implementation
 export const moduleMapper: ModuleMapper = {
   modules: moduleRegistry,
 
-  getModule: (id: string) => {
-    return moduleRegistry.find(module => module.id === id);
-  },
+  getModule: getModuleById,
 
-  getSubModule: (moduleId: string, subModuleId: string) => {
-    const module = moduleRegistry.find(m => m.id === moduleId);
-    return module?.submodules?.find(sub => sub.id === subModuleId);
-  },
+  getSubModule: getSubModuleById,
 
-  getActiveModules: () => {
-    return moduleRegistry.filter(module => module.isActive !== false);
-  },
+  getActiveModules: getActiveModulesInternal,
 
-  getModulesByPermission: (permission: string) => {
-    return moduleRegistry.filter(module => 
-      module.isActive !== false && 
-      (!module.permissions || module.permissions.includes(permission))
-    );
-  }
+  getModulesByPermission: getModulesByPermissionInternal
 };
 
-// Function to register a new module
+/**
+ * Registra un nuevo módulo o actualiza uno existente
+ * @param config - Configuración del módulo a registrar
+ */
 export const registerModule = (config: ModuleConfig): void => {
-  const existingIndex = moduleRegistry.findIndex(module => module.id === config.id);
+  const existingModule = moduleRegistry.find((module: ModuleConfig) => module.id === config.id);
   
-  if (existingIndex >= 0) {
+  if (existingModule) {
+    const existingIndex = moduleRegistry.indexOf(existingModule);
     moduleRegistry[existingIndex] = config;
   } else {
     moduleRegistry.push(config);
   }
 };
 
-// Function to register a submodule
+/**
+ * Registra un submódulo dentro de un módulo existente
+ * @param moduleId - ID del módulo padre
+ * @param subModuleConfig - Configuración del submódulo a registrar
+ */
 export const registerSubModule = (moduleId: string, subModuleConfig: SubModuleConfig): void => {
-  const module = moduleRegistry.find(m => m.id === moduleId);
+  const module = moduleRegistry.find((m: ModuleConfig) => m.id === moduleId);
   
   if (module) {
     if (!module.submodules) {
       module.submodules = [];
     }
     
-    const existingIndex = module.submodules.findIndex(sub => sub.id === subModuleConfig.id);
+    const existingSubModule = module.submodules.find((sub: SubModuleConfig) => sub.id === subModuleConfig.id);
     
-    if (existingIndex >= 0) {
+    if (existingSubModule) {
+      const existingIndex = module.submodules.indexOf(existingSubModule);
       module.submodules[existingIndex] = subModuleConfig;
     } else {
       module.submodules.push(subModuleConfig);
@@ -108,62 +153,77 @@ export const registerSubModule = (moduleId: string, subModuleConfig: SubModuleCo
   }
 };
 
-// Function to get all routes for React Router
+/**
+ * Obtiene todas las rutas de módulos y submódulos para React Router
+ * @returns Array de rutas configuradas para React Router
+ */
 export const getModuleRoutes = (): Array<{
   path: string;
   component: React.ComponentType;
   exact?: boolean;
 }> => {
-  const routes: Array<{
-    path: string;
-    component: React.ComponentType;
-    exact?: boolean;
-  }> = [];
+  const activeModules = select(
+    moduleRegistry,
+    module => module,
+    module => module.isActive !== false
+  );
 
-  moduleRegistry.forEach(module => {
-    if (module.isActive !== false) {
-      routes.push({
-        path: module.path,
-        component: module.component,
-        exact: true
-      });
+  const moduleRoutes = activeModules.map(module => ({
+    path: module.path,
+    component: module.component,
+    exact: true as const
+  }));
 
-      // Add submodule routes
-      if (module.submodules) {
-        module.submodules.forEach(subModule => {
-          if (subModule.isActive !== false) {
-            routes.push({
-              path: `${module.path}${subModule.path}`,
-              component: subModule.component,
-              exact: true
-            });
-          }
-        });
-      }
+  const subModuleRoutes = activeModules.flatMap(module => {
+    if (!module.submodules) {
+      return [];
     }
+
+    return select(
+      module.submodules,
+      subModule => ({
+        path: `${module.path}${subModule.path}`,
+        component: subModule.component,
+        exact: true as const
+      }),
+      subModule => subModule.isActive !== false
+    );
   });
 
-  return routes;
+  return [...moduleRoutes, ...subModuleRoutes];
 };
 
-// Function to get navigation structure
+/**
+ * Obtiene la estructura de navegación completa con módulos y submódulos
+ * @returns Array de items de navegación con submódulos incluidos
+ */
 export const getNavigationStructure = (): NavigationItem[] => {
-  return moduleRegistry
-    .filter(module => module.isActive !== false)
-    .map(module => ({
-      id: module.id,
-      name: module.name,
-      path: module.path,
-      icon: module.icon,
-      description: module.description,
-      submodules: module.submodules
-        ?.filter(sub => sub.isActive !== false)
-        .map(sub => ({
-          id: sub.id,
-          name: sub.name,
-          path: `${module.path}${sub.path}`,
-          icon: sub.icon,
-          description: sub.description
-        }))
-    }));
+  return select(
+    moduleRegistry,
+    module => {
+      const submodules = module.submodules
+        ? select(
+            module.submodules,
+            sub => ({
+              id: sub.id,
+              name: sub.name,
+              path: `${module.path}${sub.path}`,
+              icon: sub.icon,
+              description: sub.description
+            }),
+            sub => sub.isActive !== false
+          )
+        : undefined;
+
+      return {
+        id: module.id,
+        name: module.name,
+        path: module.path,
+        icon: module.icon,
+        description: module.description,
+        submodules
+      };
+    },
+    module => module.isActive !== false
+  );
 };
