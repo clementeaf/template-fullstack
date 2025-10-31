@@ -14,5 +14,10 @@ export const sidebarItems: SidebarItem[] = [
     id: 'document-upload',
     label: 'Carga de Documento',
     path: '/document-upload'
+  },
+  {
+    id: 'table',
+    label: 'Tabla',
+    path: '/table'
   }
 ];

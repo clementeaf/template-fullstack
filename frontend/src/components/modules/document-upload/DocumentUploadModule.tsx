@@ -13,10 +13,6 @@ const DocumentUploadModule: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [maxSize, setMaxSize] = useState<number>(10);
 
-  /**
-   * Maneja la selección de archivos y crea los objetos UploadedFile correspondientes
-   * @param files - Array de archivos seleccionados
-   */
   const handleFilesSelect = (files: File[]): void => {
     const timestamp = Date.now();
     const newFiles: UploadedFile[] = files.map((file: File) => ({
@@ -52,10 +48,6 @@ const DocumentUploadModule: React.FC = () => {
     });
   };
 
-  /**
-   * Elimina un archivo de la lista de archivos cargados
-   * @param fileId - ID del archivo a eliminar
-   */
   const removeFile = (fileId: string): void => {
     setUploadedFiles(prev => 
       select(
@@ -65,12 +57,7 @@ const DocumentUploadModule: React.FC = () => {
       )
     );
   };
-
-  /**
-   * Formatea el tamaño de un archivo en bytes a una representación legible
-   * @param bytes - Tamaño del archivo en bytes
-   * @returns String con el tamaño formateado (ej: "1.5 MB")
-   */
+  
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;

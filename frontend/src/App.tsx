@@ -9,7 +9,8 @@ import { get } from "radashi"
 const routeToModuleMap: Record<string, string | null> = {
   '/': null,
   '/buttons': 'botones',
-  '/document-upload': 'document-upload'
+  '/document-upload': 'document-upload',
+  '/table': 'table'
 };
 
 /**
@@ -17,7 +18,8 @@ const routeToModuleMap: Record<string, string | null> = {
  */
 const moduleToRouteMap: Record<string, string> = {
   'botones': '/buttons',
-  'document-upload': '/document-upload'
+  'document-upload': '/document-upload',
+  'table': '/table'
 };
 
 /**
@@ -66,6 +68,7 @@ function App() {
         <Route path="/" element={<AppContent />} />
         <Route path="/buttons" element={<AppContent />} />
         <Route path="/document-upload" element={<AppContent />} />
+        <Route path="/table" element={<AppContent />} />
       </Routes>
     </Router>
   )
